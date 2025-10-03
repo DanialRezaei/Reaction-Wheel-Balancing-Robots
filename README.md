@@ -16,7 +16,7 @@ Create a Scalable Platform: Build a hardware and software foundation that can be
 - Single-Axis Inverted Pendulum
 Status: Complete and functional
 Description: The hardware has been assembled, and the firmware successfully stabilizes the pendulum in its vertical position. The control code includes full sensor calibration, a complementary filter for sensor fusion, and a live-tunable PID controller with anti-windup logic.
-[View the Detailed Technical Report and Code for the 1-Axis Pendulum]()
+[View the Detailed Technical Report and Code for the 1-Axis Pendulum](https://github.com/DanialRezaei/Reaction-Wheel-Balancing-Robots/tree/main/Single-Axis%20Reaction%20Wheel%20Inverted%20Pendulum%20(V1.0))
 - Three-Axis Cubli:
 Status: Future Work / Planned.
 Description: This stage will extend the principles learned from the 1-axis version to control a cube balancing on a single corner, requiring a more advanced 3D state estimation (likely using quaternions) and a multi-input, multi-output (MIMO) control system.
