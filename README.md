@@ -1,16 +1,20 @@
 # Reaction Wheel Balancing Robots: From 1D Pendulum to 3D Cubli
-A placeholder image. Consider replacing this with a photo or GIF of your working robot.
+
+<p align="center">
+  <img src="./single_axis_pendulum_with_rw.png" alt="Single Axis Inversed Pendulum with Reaction Wheel Control" width="400">
+</p>
+
 ## 1. Project Overview
 This repository documents an academic exploration into the dynamics and control of inherently unstable systems, specifically focusing on reaction wheel-based inverted pendulums. The project is structured in progressive stages, beginning with the design and stabilization of a single-axis pendulum and aiming to culminate in the development of a full three-axis balancing cube (a "Cubli").
 The primary goal is to provide a comprehensive study of the practical application of control theory, from fundamental state estimation and sensor fusion to the implementation of a robust PID control law on a real-world hardware platform.
 ## 2. Project Goals
-Implement State Estimation: Develop a robust algorithm to determine the robot's orientation angle by fusing noisy accelerometer data and drifting gyroscope data from an IMU.
+- Implement State Estimation: Develop a robust algorithm to determine the robot's orientation angle by fusing noisy accelerometer data and drifting gyroscope data from an IMU.
 
-Design a PID Controller: Implement and tune a Proportional-Integral-Derivative (PID) controller to provide the corrective torque necessary to maintain balance.
+- Design a PID Controller: Implement and tune a Proportional-Integral-Derivative (PID) controller to provide the corrective torque necessary to maintain balance.
 
-Explore Unstable Systems: Gain practical experience in stabilizing a classic "unstable plant" problem in control engineering.
+- Explore Unstable Systems: Gain practical experience in stabilizing a classic "unstable plant" problem in control engineering.
 
-Create a Scalable Platform: Build a hardware and software foundation that can be extended from a 1-axis system to a more complex 3-axis system.
+- Create a Scalable Platform: Build a hardware and software foundation that can be extended from a 1-axis system to a more complex 3-axis system.
 
 ## 3. Current Status
 - Single-Axis Inverted Pendulum
