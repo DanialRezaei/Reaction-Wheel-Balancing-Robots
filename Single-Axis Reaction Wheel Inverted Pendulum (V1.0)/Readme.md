@@ -1,26 +1,25 @@
 This readme provides a detailed technical guide to the **software implementation and control theory** for a single-axis reaction wheel balancing robot. It focuses on the firmware developed for an Arduino Mega, covering key topics such as state estimation from an MPU6050 IMU, sensor fusion using a complementary filter, and the implementation of a PID control law to achieve stable balance.
 # Table of Contents
-[1. Overview](#1-Overview)
-[[# 1. Overview]]
-[[#2. Hardware and System Architecture]]
-	[[#2.1. Component List]]
-	[[#2.2. System Schematic]]
-	[[#2.3. Component Roles]]
-[[#3. Control Theory and Principles]]
-	[[#3.1. The Inverted Pendulum Problem]]
-	[[#3.2. Actuation via Reaction Wheel]]
-	[[#3.3. State Estimation via IMU]]
-	[[#3.4. Sensor Fusion The Complementary Filter]]
-	[[#3.5. The PID Controller]]
-[[#4. Software Implementation]]
-	[[#4.1. Program Structure]]
-	[[#4.2. Sensor Initialization and Calibration (angle_setup())]]
-	[[#4.3. Real-time Angle Calculation (angle_calc())]]
-	[[#4.4. PID Control Logic]]
-	[[#4.5. Motor Control (Motor_control())]]
-[[#5. Operating Procedure]]
-	[[#5.1. Calibration Sequence]]
-	[[#5.2. Live PID Tuning]]
+1.  [Overview](#1-overview)
+2.  [Hardware and System Architecture](#2-hardware-and-system-architecture)
+    * [2.1. Component List](#21-component-list)
+    * [2.2. System Schematic](#22-system-schematic)
+    * [2.3. Component Roles](#23-component-roles)
+3.  [Control Theory and Principles](#3-control-theory-and-principles)
+    * [3.1. The Inverted Pendulum Problem](#31-the-inverted-pendulum-problem)
+    * [3.2. Actuation via Reaction Wheel](#32-actuation-via-reaction-wheel)
+    * [3.3. State Estimation via IMU](#33-state-estimation-via-imu)
+    * [3.4. Sensor Fusion: The Complementary Filter](#34-sensor-fusion-the-complementary-filter)
+    * [3.5. The PID Controller](#35-the-pid-controller)
+4.  [Software Implementation](#4-software-implementation)
+    * [4.1. Program Structure](#41-program-structure)
+    * [4.2. Sensor Initialization and Calibration (angle_setup())](#42-sensor-initialization-and-calibration-angle_setup)
+    * [4.3. Real-time Angle Calculation (angle_calc())](#43-real-time-angle-calculation-angle_calc)
+    * [4.4. PID Control Logic](#44-pid-control-logic)
+    * [4.5. Motor Control (Motor_control())](#45-motor-control-motor_control)
+5.  [Operating Procedure](#5-operating-procedure)
+    * [5.1. Calibration Sequence](#51-calibration-sequence)
+    * [5.2. Live PID Tuning](#52-live-pid-tuning)
 # 1. Overview
 This project implements a single-axis inverted pendulum that actively balances itself using a reaction wheel. An inverted pendulum is an inherently unstable system, making it a classic problem in dynamics and control theory. The goal is to maintain the pendulum's body in a vertical, upright position (the unstable equilibrium point) by precisely controlling the angular acceleration of a flywheel.
 This document serves as a complete technical reference, detailing the physical hardware, the underlying control theory, and the specific software implementation used to achieve stable balance.
