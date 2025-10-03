@@ -1,6 +1,6 @@
 This readme provides a detailed technical guide to the **software implementation and control theory** for a single-axis reaction wheel balancing robot. It focuses on the firmware developed for an Arduino Mega, covering key topics such as state estimation from an MPU6050 IMU, sensor fusion using a complementary filter, and the implementation of a PID control law to achieve stable balance.
 # Table of Contents
-(1. Overview)[# 1. Overview]
+[1. Overview](#1-Overview)
 [[# 1. Overview]]
 [[#2. Hardware and System Architecture]]
 	[[#2.1. Component List]]
@@ -33,7 +33,7 @@ This document serves as a complete technical reference, detailing the physical h
 - **Power Supply:** External DC power source for the motor (e.g., batteries)
 ## 2.2. System Schematic
 The components are interconnected as shown in the schematic below. The Arduino serves as the central processing unit, reading sensor data via I2C and sending PWM control signals to the motor driver.
-![Alt text for the image](./path/to/your/image.jpg)
+![Single-Axis_Sketch image](./docs/Single-Axis_Sketch_v1.png)
 ## 2.3. Component Roles
 - **Arduino Mega:** The brain of the system. It executes the control loop, which involves reading sensor data, calculating the orientation angle, computing the necessary corrective action via a PID algorithm, and sending PWM signals to the motor driver.
 - **MPU6050 IMU:** The primary sensor for determining the state of the pendulum. It provides raw acceleration and angular velocity data, which is fused to produce a stable estimate of the pendulum's tilt angle.
