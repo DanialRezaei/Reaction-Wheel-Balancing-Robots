@@ -21,7 +21,7 @@ This readme provides a detailed technical guide to the **software implementation
     * [5.1. Calibration Sequence](#51-calibration-sequence)
     * [5.2. Live PID Tuning](#52-live-pid-tuning)
 # 1. Overview
-This project implements a single-axis inverted pendulum that actively balances itself using a reaction wheel. An inverted pendulum is an inherently unstable system, making it a classic problem in dynamics and control theory. The goal is to maintain the pendulum's body in a vertical, upright position (the unstable equilibrium point) by precisely controlling the angular acceleration of a flywheel.
+This project implements a single-axis inverted pendulum that actively balances itself using a reaction wheel. An inverted pendulum is an inherently unstable system, making it a classic problem in dynamics and control theory. The goal is to maintain the pendulum's body in a vertical, upright position (the unstable equilibrium point) by precisely controlling the angular acceleration of a flywheel.  
 This document serves as a complete technical reference, detailing the physical hardware, the underlying control theory, and the specific software implementation used to achieve stable balance.
 # 2. Hardware and System Architecture
 ## 2.1. Component List
@@ -32,7 +32,10 @@ This document serves as a complete technical reference, detailing the physical h
 - **Power Supply:** External DC power source for the motor (e.g., batteries)
 ## 2.2. System Schematic
 The components are interconnected as shown in the schematic below. The Arduino serves as the central processing unit, reading sensor data via I2C and sending PWM control signals to the motor driver.
-![Single-Axis_Sketch image](./docs/Single-Axis_Sketch_v1.png)
+<p align="center">
+  <img src="./docs/Single-Axis_Sketch_v1.png" alt="Single-Axis_Sketch image" width="600">
+</p>
+
 ## 2.3. Component Roles
 - **Arduino Mega:** The brain of the system. It executes the control loop, which involves reading sensor data, calculating the orientation angle, computing the necessary corrective action via a PID algorithm, and sending PWM signals to the motor driver.
 - **MPU6050 IMU:** The primary sensor for determining the state of the pendulum. It provides raw acceleration and angular velocity data, which is fused to produce a stable estimate of the pendulum's tilt angle.
@@ -44,34 +47,34 @@ An inverted pendulum is a classic example of an unstable dynamic system. Its cen
 ## 3.2. Actuation via Reaction Wheel
 The system's ability to balance is governed by the principle of **conservation of angular momentum**, a direct consequence of Newton's Third Law.
 When the controller commands the motor to apply a torque ($T$) to the flywheel, causing it to accelerate with an angular acceleration ($\alpha$), the flywheel exerts an equal and opposite reaction torque ($−T$) on the body of the pendulum.
-> `Mathematical Principle`
-> **Torque1:**
-> $T=I⋅α$
+> `Mathematical Principle`  
+> **Torque:**  
+> $$T=I⋅α$$  
 > Where:
-> - $T$ = Torque    
-> - $I$ = Moment of inertia of the flywheel
-> - $α$ = Angular acceleration of the flywheel
-This reaction torque is used to counteract the gravitational torque and push the pendulum back to its vertical setpoint.
+> - $T$ = Torque   
+> - $I$ = Moment of inertia of the flywheel  
+> - $α$ = Angular acceleration of the flywheel  
+This reaction torque is used to counteract the gravitational torque and push the pendulum back to its vertical setpoint.  
 ## 3.3. State Estimation via IMU
-To apply the correct torque, the controller must first have an accurate estimate of the pendulum's current state, specifically its tilt angle. The MPU6050 provides two sensors for this purpose.
+To apply the correct torque, the controller must first have an accurate estimate of the pendulum's current state, specifically its tilt angle. The MPU6050 provides two sensors for this purpose.  
 - **Accelerometer (Static Tilt Sensing):** The accelerometer measures the static gravitational vector. By resolving this vector into its components on the sensor's axes, a tilt angle can be derived using trigonometric functions. This method provides a stable, long-term reference for which way is "down." However, it is highly susceptible to noise from vibration and linear acceleration, making it unreliable during dynamic conditions.
 - **Gyroscope (Angular Rate Sensing):** The gyroscope measures angular velocity (rate of rotation). The angle can be obtained by performing a **numerical integration** of this rate over time. This provides a clean, responsive signal that is immune to linear acceleration. However, due to inherent sensor bias, this integration process accumulates error, causing the angle estimate to **drift** significantly over time.
 ## 3.4. Sensor Fusion: The Complementary Filter
 Since neither sensor is sufficient on its own, their data must be fused. A **complementary filter** is a computationally efficient algorithm that combines the best characteristics of both sensors. It is a steady-state approximation of a more complex Kalman filter.
-> `Mathematical Principle`
-> **Complementary Filter:**
-> $$\theta_{new}​=\alpha \cdot(\theta_{old​}+\omega_{gyro}​\cdot dt)+(1−\alpha)\cdot\theta_{accel}​$$
+> `Mathematical Principle`  
+> **Complementary Filter:**  
+> $$\theta_{new}​=\alpha \cdot(\theta_{old​}+\omega_{gyro}​\cdot dt)+(1−\alpha)\cdot\theta_{accel}​$$  
 > Where:
 > - $\alpha$ is the filter coefficient (e.g., 0.95), determining the trust in the gyroscope.  
-> - The term $\theta_{old​}+\omega_{gyro}​\cdot dt$ represents the **Euler integration** of the gyroscope rate, forming the high-pass filter component.
-> - $\theta_{accel}$ is the angle from the accelerometer, forming the low-pass filter component.
+> - The term $\theta_{old​}+\omega_{gyro}​\cdot dt$ represents the **Euler integration** of the gyroscope rate, forming the high-pass filter component.  
+> - $\theta_{accel}$ is the angle from the accelerometer, forming the low-pass filter component.  
 
 The filter primarily trusts the integrated gyroscope reading for its responsiveness while using a small amount of the stable accelerometer data to correct for the gyro's long-term drift.
 ## 3.5. The PID Controller
 The Proportional-Integral-Derivative (PID) controller is the core of the decision-making process. It calculates the necessary motor output (torque) required to bring the pendulum's angle back to the desired setpoint (0 degrees).
-> `Mathematical Principle`
-> **PID Control Law (Discrete-Time):** 
-> $$u(t)=K_p​e(t)+K_i​\Sigma_{i=0}^{t}​e(i)\Delta t+K_d​ \frac{e(t)−e(t−1)}{\Delta t}$$​
+> `Mathematical Principle`  
+> **PID Control Law (Discrete-Time):**  
+> $$u(t)=K_p​e(t)+K_i​\Sigma_{i=0}^{t}​e(i)\Delta t+K_d​ \frac{e(t)−e(t−1)}{\Delta t}$$​  
 > Where:
 > - $u(t)$ is the controller output.
 > - $e(t)$ is the error (setpoint - current angle).
