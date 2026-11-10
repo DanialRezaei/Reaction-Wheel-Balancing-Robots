@@ -14,54 +14,46 @@ void IRAM_ATTR ENC3_READ();
 
 void setup() {
   Serial.begin(115200);
-  delay(500);
-  Serial.println("\n--- Starting ESP32-Cube ---");
+  SerialBT.begin("ESP32-Cube");
+  EEPROM.begin(EEPROM_SIZE);
 
   pinMode(BUZZER, OUTPUT);
   digitalWrite(BUZZER, LOW);
   pinMode(BRAKE, OUTPUT);
-  digitalWrite(BRAKE, LOW);
+  digitalWrite(BRAKE, HIGH);
 
-  Wire.begin(21, 22, 400000); // راه‌اندازی صریح I2C روی پایه‌های ۲۱ و ۲۲ با فرکانس 400kHz
-
-  SerialBT.begin("ESP32-Cube");
-  Serial.println("Bluetooth Ready: ESP32-Cube");
-
-  EEPROM.begin(EEPROM_SIZE);
-  EEPROM.get(0, offsets);
-  if (offsets.ID == 96) {
-    calibrated = true;
-    Serial.println("Offsets loaded from EEPROM.");
-  }
-
-  delay(200);
-  angle_setup();
+  Wire.begin(21, 22, 400000);
 
   pinMode(DIR1, OUTPUT);
-  pinMode(ENC1_1, INPUT_PULLUP);
-  pinMode(ENC1_2, INPUT_PULLUP);
+  pinMode(ENC1_1, INPUT);
+  pinMode(ENC1_2, INPUT);
   ledcAttach(PWM1, BASE_FREQ, TIMER_BIT);
   Motor1_control(0);
   attachInterrupt(digitalPinToInterrupt(ENC1_1), ENC1_READ, CHANGE);
   attachInterrupt(digitalPinToInterrupt(ENC1_2), ENC1_READ, CHANGE);
   
   pinMode(DIR2, OUTPUT);
-  pinMode(ENC2_1, INPUT_PULLUP);
-  pinMode(ENC2_2, INPUT_PULLUP);
+  pinMode(ENC2_1, INPUT);
+  pinMode(ENC2_2, INPUT);
   ledcAttach(PWM2, BASE_FREQ, TIMER_BIT);
   Motor2_control(0);
   attachInterrupt(digitalPinToInterrupt(ENC2_1), ENC2_READ, CHANGE);
   attachInterrupt(digitalPinToInterrupt(ENC2_2), ENC2_READ, CHANGE);
   
   pinMode(DIR3, OUTPUT);
-  pinMode(ENC3_1, INPUT_PULLUP);
-  pinMode(ENC3_2, INPUT_PULLUP);
+  pinMode(ENC3_1, INPUT);
+  pinMode(ENC3_2, INPUT);
   ledcAttach(PWM3, BASE_FREQ, TIMER_BIT);
   Motor3_control(0);
   attachInterrupt(digitalPinToInterrupt(ENC3_1), ENC3_READ, CHANGE);
   attachInterrupt(digitalPinToInterrupt(ENC3_2), ENC3_READ, CHANGE);
 
-  Serial.println("Setup Complete!");
+  EEPROM.get(0, offsets);
+  if (offsets.ID == 96) 
+    calibrated = true;
+
+  delay(200);
+  angle_setup();
 }
 
 void loop() {
@@ -76,6 +68,7 @@ void loop() {
     enc_count2 = 0;
     motor3_speed = enc_count3;
     enc_count3 = 0;
+    
     threeWay_to_XY(motor1_speed, motor2_speed, motor3_speed);
     motors_speed_Z = motor1_speed + motor2_speed + motor3_speed;
     
@@ -112,13 +105,11 @@ void loop() {
     previousT_1 = currentT;
   }
   
-  // comment
   if (currentT - previousT_2 >= 2000) {    
     if (!calibrated && !calibrating) {
       SerialBT.println("first you need to calibrate the balancing points...");
       Serial.println("first you need to calibrate the balancing points (over bluetooth)...");
     }
-
     previousT_2 = currentT;
   }  
 }

@@ -24,16 +24,6 @@ void save() {
 
 void angle_setup() {
   delay(100);
-  Wire.beginTransmission(MPU6050);
-  if (Wire.endTransmission() != 0) {
-    Serial.println("CRITICAL ERROR: MPU6050 NOT FOUND!");
-    while (1) {
-      beep();
-      delay(500);
-    }
-  }
-  Serial.println("MPU6050 Connected. Calibrating Gyro...");
-
   writeTo(MPU6050, PWR_MGMT_1, 0);
   writeTo(MPU6050, ACCEL_CONFIG, accSens << 3);
   writeTo(MPU6050, GYRO_CONFIG, gyroSens << 3);
@@ -111,6 +101,7 @@ void angle_calc() {
   Acc_angleX = -atan2(AcYc, -AcZc) * 57.2958;
   robot_angleX = robot_angleX * Gyro_amount + Acc_angleX * (1.0 - Gyro_amount);
 
+
   if (abs(AcX) < 2000 && abs(Acc_angleX) < 0.4 && abs(Acc_angleY) < 0.4 && !vertical_vertex && !vertical_edge) {
     robot_angleX = Acc_angleX;
     robot_angleY = Acc_angleY;
@@ -129,7 +120,7 @@ void angle_calc() {
 void XYZ_to_threeWay(float pwm_X, float pwm_Y, float pwm_Z) {
   int16_t m1 = round((0.5 * pwm_X - 0.866 * pwm_Y) / 1.37 + pwm_Z);  
   int16_t m2 = round((0.5 * pwm_X + 0.866 * pwm_Y) / 1.37 + pwm_Z);
-  int16_t m3 = -pwm_X / 1.37 + pwm_Z;  
+  int16_t m3 = round(-pwm_X / 1.37 + pwm_Z);  
   Motor1_control(m1);
   Motor2_control(m2);
   Motor3_control(m3);
