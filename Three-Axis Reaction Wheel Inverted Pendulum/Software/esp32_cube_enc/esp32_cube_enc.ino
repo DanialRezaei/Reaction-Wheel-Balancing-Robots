@@ -3,10 +3,8 @@
 #include <EEPROM.h>
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include "BluetoothSerial.h"
-#include <FastLED.h>
 
 BluetoothSerial SerialBT;
-CRGB leds[NUM_PIXELS];
 
 void IRAM_ATTR ENC1_READ();
 void IRAM_ATTR ENC2_READ();
@@ -21,6 +19,12 @@ void setup() {
   digitalWrite(BUZZER, LOW);
   pinMode(BRAKE, OUTPUT);
   digitalWrite(BRAKE, HIGH);
+
+  // Initialize LEDs
+  pinMode(LED1, OUTPUT);
+  pinMode(LED2, OUTPUT);
+  digitalWrite(LED1, LOW);
+  digitalWrite(LED2, LOW);
 
   Wire.begin(21, 22, 400000);
 
@@ -74,6 +78,9 @@ void loop() {
     
     if (vertical_vertex && calibrated && !calibrating) {    
       digitalWrite(BRAKE, HIGH);
+      digitalWrite(LED1, HIGH);
+      digitalWrite(LED2, HIGH);
+      
       gyroX = GyX / 131.0;
       gyroY = GyY / 131.0;
       gyroZ = GyZ / 131.0;
@@ -89,6 +96,9 @@ void loop() {
       XYZ_to_threeWay(-pwm_X, pwm_Y, -pwm_Z);
     } else if (vertical_edge && calibrated && !calibrating) {
       digitalWrite(BRAKE, HIGH);
+      digitalWrite(LED1, HIGH);
+      digitalWrite(LED2, LOW);
+      
       gyroX = GyX / 131.0;
       gyroXfilt = alpha * gyroX + (1 - alpha) * gyroXfilt;
       
@@ -99,13 +109,16 @@ void loop() {
     } else {
       XYZ_to_threeWay(0, 0, 0);
       digitalWrite(BRAKE, LOW);
+      digitalWrite(LED1, LOW);
+      digitalWrite(LED2, LOW);
       motors_speed_X = 0;
       motors_speed_Y = 0;
     }
     previousT_1 = currentT;
   }
   
-  if (currentT - previousT_2 >= 2000) {    
+  if (currentT - previousT_2 >= 5000) {    
+    battVoltage();
     if (!calibrated && !calibrating) {
       SerialBT.println("first you need to calibrate the balancing points...");
       Serial.println("first you need to calibrate the balancing points (over bluetooth)...");

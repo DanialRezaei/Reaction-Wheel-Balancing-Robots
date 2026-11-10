@@ -25,19 +25,19 @@
 #define TIMER_BIT   8
 #define BASE_FREQ   20000
 
-#define MPU6050       0x68   // Device address
-#define ACCEL_CONFIG  0x1C   // Accelerometer configuration address
-#define GYRO_CONFIG   0x1B   // Gyro configuration address
+#define MPU6050       0x68   
+#define ACCEL_CONFIG  0x1C   
+#define GYRO_CONFIG   0x1B   
 #define PWR_MGMT_1    0x6B
 #define PWR_MGMT_2    0x6C
 
-#define accSens 0            // 0 = 2g, 1 = 4g, 2 = 8g, 3 = 16g
-#define gyroSens 0           // 0 = 250rad/s, 1 = 500rad/s, 2 1000rad/s, 3 = 2000rad/s
+#define accSens 0            
+#define gyroSens 0           
 
 #define EEPROM_SIZE   64
 
-#define LED_PIN       19     // Pin that connects to WS2812B
-#define NUM_PIXELS    3      // The number of LEDs (pixels) on WS2812B
+#define LED1          12     
+#define LED2          2      
 
 float Gyro_amount = 0.996;
 
@@ -97,4 +97,4 @@ long currentT, previousT_1, previousT_2;
 volatile int  enc_count1 = 0, enc_count2 = 0, enc_count3 = 0;
 int16_t motor1_speed;         
 int16_t motor2_speed;         
-int16_t motor3_speed;     
+int16_t motor3_speed;

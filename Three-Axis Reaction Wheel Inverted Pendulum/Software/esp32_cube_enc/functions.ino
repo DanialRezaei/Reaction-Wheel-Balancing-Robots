@@ -29,6 +29,7 @@ void angle_setup() {
   writeTo(MPU6050, GYRO_CONFIG, gyroSens << 3);
   delay(100);
   
+  digitalWrite(LED1, HIGH);
   beep();
   for (int i = 0; i < 512; i++) {
     angle_calc();
@@ -37,8 +38,10 @@ void angle_setup() {
   }
   GyZ_offset = GyZ_offset_sum >> 9;
   Serial.print("GyZ offset value = "); Serial.println(GyZ_offset);
+  digitalWrite(LED1, LOW);
   beep();
 
+  digitalWrite(LED2, HIGH);
   for (int i = 0; i < 512; i++) {
     angle_calc();
     GyY_offset_sum += GyY;
@@ -46,8 +49,11 @@ void angle_setup() {
   }
   GyY_offset = GyY_offset_sum >> 9;
   Serial.print("GyY offset value = "); Serial.println(GyY_offset);
+  digitalWrite(LED2, LOW);
   beep();
 
+  digitalWrite(LED1, HIGH);
+  digitalWrite(LED2, HIGH);
   for (int i = 0; i < 512; i++) {
     angle_calc();
     GyX_offset_sum += GyX;
@@ -55,6 +61,8 @@ void angle_setup() {
   }
   GyX_offset = GyX_offset_sum >> 9;
   Serial.print("GyX offset value = "); Serial.println(GyX_offset);
+  digitalWrite(LED1, LOW);
+  digitalWrite(LED2, LOW);
   beep();
   beep();
 }
@@ -101,7 +109,6 @@ void angle_calc() {
   Acc_angleX = -atan2(AcYc, -AcZc) * 57.2958;
   robot_angleX = robot_angleX * Gyro_amount + Acc_angleX * (1.0 - Gyro_amount);
 
-
   if (abs(AcX) < 2000 && abs(Acc_angleX) < 0.4 && abs(Acc_angleY) < 0.4 && !vertical_vertex && !vertical_edge) {
     robot_angleX = Acc_angleX;
     robot_angleY = Acc_angleY;
@@ -131,11 +138,22 @@ void threeWay_to_XY(int in_speed1, int in_speed2, int in_speed3) {
   speed_Y = -(-0.866 * (in_speed2 - in_speed1)) / 1.1;
 }
 
-void battVoltage(double voltage) {
-  if (voltage > 8 && voltage <= 9.5) {
-    digitalWrite(BUZZER, HIGH);
-  } else {
-    digitalWrite(BUZZER, LOW);
+void battVoltage() {
+  long raw_adc_sum = 0;
+  for(int i = 0; i < 20; i++) {
+    raw_adc_sum += analogRead(VBAT);
+  }
+  int raw_adc = raw_adc_sum / 20;
+  
+  // V_bat = (ADC * 0.003465) * CalibrationFactor(1.0304)
+  float voltage = raw_adc * 0.003570; 
+
+  if (voltage > 6.0 && voltage <= 10.8) { // 6.0V lower bound to avoid false triggers when disconnected
+    beep();
+    delay(50);
+    beep();
+    delay(50);
+    beep();
   }
 }
 
